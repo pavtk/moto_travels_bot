@@ -20,7 +20,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id=update.effective_chat.id,
         text=(
             f'Cлава роботам, смерть всем человекам'
-            f'\nIn dev...{update.message.chat.get_member} {user_info.status}'
+            f'\nIn dev...'
         )
     )
     if user_info.status == 'creator' or 'administartor':
