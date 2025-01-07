@@ -24,8 +24,8 @@ class Base(AsyncAttrs, DeclarativeBase):
 
 class Biker(Base):
     first_name: Mapped[str]
-    username: Mapped[str] = mapped_column(unique=True)
-    user_chat_id: Mapped[int]
+    username: Mapped[str] = mapped_column(nullable=True)
+    user_chat_id: Mapped[int] = mapped_column(unique=True)
     travels: Mapped[list['Travel']] = relationship(
         'Travel', back_populates='biker', cascade='all, delete-orphan')
 

@@ -1,5 +1,7 @@
 import asyncio
 import logging
+import logging.config
+import sys
 import signal
 
 from telegram.ext import (Application, ApplicationBuilder, CommandHandler,
@@ -11,9 +13,17 @@ from handlers import (answer_trip_handler, calendar, start_handler,
                       trip_handler, welcome_new_member)
 
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
+        level=logging.DEBUG,
+        handlers=[
+            logging.FileHandler(f'{__file__[:-3]}.log', 'a'),
+            logging.StreamHandler(stream=sys.stdout)
+        ],
+        format=(
+            '%(asctime)s, %(levelname)s,'
+            '%(lineno)s, %(funcName)s,'
+            '%(name)s, %(message)s'
+        )
+    )
 
 application = ApplicationBuilder().token(settings.TG_TOKEN).build()
 application.add_handler(CommandHandler('start', start_handler))

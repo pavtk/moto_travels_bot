@@ -14,19 +14,20 @@ bold_end = '\033[0m'
 async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not in_group_check:
         return await context.bot.send_message(chat_id=update.message.from_user.id, text=('Permission denied'))
-    user_info = await context.bot.get_chat_member(chat_id=settings.CHAT_ID, user_id=update.message.from_user.id)
+    user_info = await context.bot.get_chat_member(chat_id=update.message.chat_id, user_id=update.message.from_user.id)
     await context.bot.send_message(
-        message_thread_id=update._effective_message.message_thread_id,
-        chat_id=update.effective_chat.id,
+        # message_thread_id=update._effective_message.message_thread_id,
+        chat_id=update.message.from_user.id,
         text=(
             f'Cлава роботам, смерть всем человекам'
             f'\nIn dev...'
+            f'\nДля начала работы с ботом введите команду /trip'
         )
     )
     if user_info.status == 'creator' or 'administartor':
         await context.bot.send_message(
-            message_thread_id=update._effective_message.message_thread_id,
-            chat_id=update.effective_chat.id,
+            # message_thread_id=update._effective_message.message_thread_id,
+            chat_id=message.from_user.id,
             text=f'Tututut'
         )
 
@@ -34,7 +35,7 @@ async def start_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def trip_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):   
     chat_id = update.message.from_user.id
     await context.bot.send_message(
-        message_thread_id=update._effective_message.message_thread_id,
+        # message_thread_id=update._effective_message.message_thread_id,
         chat_id=chat_id,
         text=(
             f'Привет, *\\{update.message.from_user.first_name}*'
@@ -70,8 +71,6 @@ async def trip_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def answer_trip_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not in_group_check:
-        return await context.bot.send_message(chat_id=update.message.from_user.id, text=('Permission denied'))
     all_bikers = await get_all_bikers()
     cur_biker = None
     for biker in all_bikers:
@@ -94,8 +93,6 @@ async def answer_trip_handler(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 
 async def calendar(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if not in_group_check:
-        return await context.bot.send_message(chat_id=update.message.from_user.id, text=('Permission denied'))
     travels = await get_all_travels()
     for travel in travels:
         res = travel.to_dict()
@@ -109,8 +106,9 @@ async def calendar(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                            f'\n<b>4. Расстояние</b>: {res["distance"]}'
                                            f'\n<b>5. Максимальная длительность</b>: {res["trip_time"]}'
                                            f'\n<b>6. Описание</b>: {res["description"]}'
-                                           f'\n<b>7. Идейный вдохновитель мероприятия</b>: @{travel.biker.username}'
-
+                                           f'\n<b>7. Идейный вдохновитель мероприятия</b>: '
+                                           f'<a href="tg://user?id={update.message.from_user.id}">'
+                                           f'{update.message.from_user.first_name}</a>'
                                        ),
                                        parse_mode='HTML'
                                        )
